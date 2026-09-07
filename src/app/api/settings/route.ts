@@ -1,3 +1,4 @@
+export const dynamic = "force-static";
 import { NextResponse } from "next/server";
 import { getSettings, updateSettings } from "@/lib/db-access";
 import type { AppSettings } from "@/lib/types";
