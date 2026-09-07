@@ -1,3 +1,4 @@
+export const dynamic = "force-static";
 import { NextResponse } from "next/server";
 import { getSettings, getRecords } from "@/lib/db-access";
 import type { BackupData } from "@/lib/types";
