@@ -31,6 +31,8 @@ jobs:
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
       - name: Build Web Assets & Capacitor Sync
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/dummy_db"
         run: |
           npm run build
           mkdir -p out
