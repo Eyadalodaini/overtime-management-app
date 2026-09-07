@@ -2,59 +2,48 @@ name: Build Android APK
 
 on:
   workflow_dispatch:
-    inputs:
-      app_url:
-        description: "رابط التطبيق المنشور (مثال: https://overtime-app.vercel.app)"
-        required: true
-        type: string
 
 jobs:
-  build-apk:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: "npm"
+          node-version: 22
 
-      - name: Setup Java
+      - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
-          distribution: "temurin"
-          java-version: "17"
+          distribution: 'temurin'
+          java-version: '17'
 
-      - name: Install Bubblewrap
-        run: npm install -g @bubblewrap/cli
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
-      - name: Initialize TWA project
+      - name: Install Dependencies
         run: |
-          mkdir -p android-twa
-          cd android-twa
-          bubblewrap init --manifest "${{ github.event.inputs.app_url }}/manifest.json" --directory ./
-        env:
-          APP_URL: ${{ github.event.inputs.app_url }}
+          npm install
+          npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      - name: Build APK
+      - name: Build Web Assets & Capacitor Sync
         run: |
-          cd android-twa
-          bubblewrap build
+          npm run build
+          npx cap init OvertimeApp com.overtime.app --web-dir out
+          npx cap add android
+          npx cap sync android
 
-      - name: Upload APK
+      - name: Build Android APK
+        run: |
+          cd android
+          ./gradlew assembleDebug
+
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: overtime-app-apk
-          path: android-twa/app-release-signed.apk
-          if-no-files-found: error
-
-      - name: Upload APK unsigned fallback
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: overtime-app-apk-unsigned
-          path: android-twa/app-release-unsigned.apk
-          if-no-files-found: ignore
+          name: app-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug-apk.apk
