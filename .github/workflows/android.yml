@@ -33,6 +33,7 @@ jobs:
       - name: Build Web Assets & Capacitor Sync
         run: |
           npm run build
+          mkdir -p out
           npx cap init OvertimeApp com.overtime.app --web-dir out
           npx cap add android
           npx cap sync android
@@ -40,10 +41,11 @@ jobs:
       - name: Build Android APK
         run: |
           cd android
+          chmod +x gradlew
           ./gradlew assembleDebug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug-apk.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
