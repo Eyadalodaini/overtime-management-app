@@ -30,10 +30,11 @@ jobs:
           npm install
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      - name: Build Web Assets & Capacitor Sync
+      - name: Remove API Routes for Static Export & Build
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/dummy_db"
         run: |
+          rm -rf src/app/api
           npm run build
           mkdir -p out
           npx cap init OvertimeApp com.overtime.app --web-dir out
