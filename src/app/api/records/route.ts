@@ -1,4 +1,4 @@
-export const dynamic = 'force-static';
+export const dynamic = "force-static";
 import { NextResponse } from "next/server";
 import { getRecords, createRecord } from "@/lib/db-access";
 import { calculateAmount } from "@/lib/utils";
