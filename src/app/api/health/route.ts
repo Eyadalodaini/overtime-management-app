@@ -1,7 +1,7 @@
+export const dynamic = "force-static";
 import { db } from "@/db";
 import { sql } from "drizzle-orm";
 
-export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
